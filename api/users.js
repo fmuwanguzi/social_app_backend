@@ -21,6 +21,9 @@ router.post('/register', (req, res) => {
     console.log('inside of register')
     //console.log(db)
     console.log("-----req---", req.body )
+    console.log("-----IS NAME STILL SHOWING UP-----", req.body.name)
+    console.log("-----req---", req.body.username )
+    
     //find user by email
     db.User.findOne({ email: req.body.email })
     .then(user => {
@@ -32,9 +35,14 @@ router.post('/register', (req, res) => {
             // Create a new user
             console.log('else statement');
             const newUser = new User({
-                name: req.body.name,
+                username: req.body.username,
                 email: req.body.email,
-                password: req.body.password
+                password: req.body.password,
+                picture: req.body.picture,
+                bio: req.body.bio,
+                //following: req.body.following,
+                followers: req.body.followers,
+                follows: req.body.follows
             });
             // Salt and hash the password, then save the user
             bcrypt.genSalt(10, (err, salt) => {
@@ -79,7 +87,11 @@ router.post('/login', async (req, res) => {
                     const payload = {
                         id: user.id,
                         email: user.email,
-                        name: user.name,
+                        username: user.username,
+                        picture: user.picture,
+                        bio: user.bio,
+                        following: user.following,
+                        followers: user.followers
                         // expiredToken: user.expiredToken
                     };
                     // Sign token
@@ -113,12 +125,45 @@ router.post('/login', async (req, res) => {
     })
 })
 
+// this route will find all the users that are signed up
+router.get('/all',(req, res) =>{
+    console.log("all users route")
+    db.User.find()
+    .then(users=> {
+        console.log(users)
+        res.json(users)
+    })
+})
+
+//update user account bio and picture
+router.put('/update/:id', (req, res) => {
+    console.log('---this is put route---');
+    console.log('this is req params id', req.params.id)
+    console.log('-----this is the user follows-----', req.body.follows )
+
+    db.User.updateMany({_id: req.params.id}, {$set: 
+        {           
+            picture: req.body.picture,
+            bio: req.body.bio      
+        },
+        
+    },{multi : true} )
+    .then((user) => {
+      res.status(201).json({ user })
+    })
+    .catch((error) => res.send({ error }))
+})
+
 // GET api/users/current (Private)
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({
         id: req.user.id,
-        name: req.user.name,
-        email: req.user.email
+        username: req.user.username,
+        email: req.user.email,
+        picture: user.picture,
+        bio: user.bio,
+        following: user.following,
+        followers: user.followers
     });
 });
 

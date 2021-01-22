@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 //followers and following schemas
-const followSchema = new Schema({
-    following: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }]
+// const followSchema = new Schema({
+//     following: [{
+//         type: Schema.Types.ObjectId,
+//         ref: 'User'
+//     }]
     // followers: [{
     //     type: Schema.Types.ObjectId,
     //     ref: 'User'
     // }]
-})
+//})
 
 // User Schema
 const userSchema = new Schema({
@@ -46,12 +46,12 @@ const userSchema = new Schema({
     // ],
     follows:[ 
         {type: Schema.ObjectId, 
-        ref: 'Follow'} 
+        ref: 'User'} 
         
     ],
     followers:[ 
         {type: Schema.ObjectId, 
-        ref: 'Follow'} 
+        ref: 'User'} 
         
     ],
     // following:{
@@ -70,5 +70,5 @@ const userSchema = new Schema({
     }
 });
 
-module.exports = Follow = mongoose.model('Follow', followSchema);
+//module.exports = Follow = mongoose.model('Follow', followSchema);
 module.exports = User = mongoose.model('User', userSchema);

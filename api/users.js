@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
                         username: user.username,
                         picture: user.picture,
                         bio: user.bio,
-                        following: user.following,
+                        follows: user.follows,
                         followers: user.followers
                         // expiredToken: user.expiredToken
                     };
@@ -154,6 +154,18 @@ router.put('/update/:id', (req, res) => {
     .catch((error) => res.send({ error }))
 })
 
+//update followers 
+router.post('/follow/:id', (req, res) => {
+    console.log(req.body, '----REQ BODY-----')
+    console.log(req.params, '----REQ PARAMS-----')
+    db.User.findOne({ _id: req.params.id })
+    //still investigating poulate and exec
+    .populate('Follow').exec((error, follows)=>{
+        if(error) return handleError(error);
+        console.log('you follow someone new', follows)
+    })
+})
+
 // GET api/users/current (Private)
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({
@@ -162,7 +174,7 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
         email: req.user.email,
         picture: user.picture,
         bio: user.bio,
-        following: user.following,
+        follows: user.follows,
         followers: user.followers
     });
 });

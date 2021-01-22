@@ -154,16 +154,56 @@ router.put('/update/:id', (req, res) => {
     .catch((error) => res.send({ error }))
 })
 
-//update followers 
-router.post('/follow/:id', (req, res) => {
-    console.log(req.body, '----REQ BODY-----')
-    console.log(req.params, '----REQ PARAMS-----')
-    db.User.findOne({ _id: req.params.id })
-    //still investigating poulate and exec
-    .populate('Follow').exec((error, follows)=>{
-        if(error) return handleError(error);
-        console.log('you follow someone new', follows)
+//get route to view people the user follows as an array of objects
+router.get('/follows/:id', async (req, res) => {
+    console.log(req.body.id, '----REQ BODY-----')
+    console.log(req.params.id, '----REQ PARAMS-----')
+    const userFollows = await db.User.findOne({ _id: req.params.id })
+    
+    userFollows.populate('follows').execPopulate().then(function (user){
+        res.json(user.follows)
     })
+    .catch((error) => res.send({error}))
+})
+
+//get route to view the user's followers as an array of objects
+router.get('/followers/:id', async (req, res) => {
+    console.log(req.body.id, '----REQ BODY-----')
+    console.log(req.params.id, '----REQ PARAMS-----')
+    const userFollowers = await db.User.findOne({ _id: req.params.id })
+    
+    userFollowers.populate('followers').execPopulate().then(function (user){
+        res.json(user.followers)
+    })
+    .catch((error) => res.send({error}))
+})
+
+//Put route to add a follower
+router.put('/followers/add/:id', (req, res) => {
+    console.log('====req.params=====',req.params)
+    console.log('=====req.body=======',req.body)
+    //addToSet doesn't allow for duplicates
+    db.User.findOneAndUpdate({ _id: req.params.id } ,{$addToSet:
+    
+        {followers: req.body.followers },
+    }).then((user) => {
+        res.status(201).json({ user })
+      })
+      .catch((error) => res.send({ error }))
+})
+
+//Put route to remove a follower
+router.put('/followers/remove/:id', (req, res) => {
+    console.log('====req.params=====',req.params)
+    console.log('=====req.body=======',req.body)
+    //addToSet doesn't allow for duplicates
+    db.User.findOneAndUpdate({ _id: req.params.id } ,{$pull:
+    
+        {followers: req.body.followers },
+    }).then((user) => {
+        res.status(201).json({ user })
+      })
+      .catch((error) => res.send({ error }))
 })
 
 // GET api/users/current (Private)

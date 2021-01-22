@@ -64,7 +64,7 @@ const userSchema = new Schema({
     //     ref: 'User'
         
     // },
-    date: { //time stamp
+    date: { //time stamp when user registers
         type: Date,
         default: Date.now()
     }

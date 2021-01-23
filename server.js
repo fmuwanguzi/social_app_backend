@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(passport.initialize());
 
 app.get('/', (req,res)=>{
-    res.status(200).json ({ message: 'Smile you are being watched by the backend enginnering team' })
+    res.status(200).json ({ message: 'Smile you are being watched by the Kick it backend enginnering team(Felix M and Angel B' })
 });
 
 app.use('/api/users', users);

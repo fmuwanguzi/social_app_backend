@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//followers and following schemas
-// const followSchema = new Schema({
-//     following: [{
-//         type: Schema.Types.ObjectId,
-//         ref: 'User'
-//     }]
-    // followers: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'User'
-    // }]
-//})
+//post schemas
+const postSchema = new Schema({
+    post: {
+        type: String,
+        type: Date,
+        default: Date.now()
+    }
+})
 
 // User Schema
 const userSchema = new Schema({
@@ -36,39 +33,33 @@ const userSchema = new Schema({
         type: String,
     },
     bio:{
-        type: String
+        type: String,
     },
-    // following:[
-    //     this
-    // ],
-    // followers:[
-    //     this
-    // ],
+    //array of posts so a user can have multiple posts
+    posts:[
+        {
+            type: String, 
+            ref: 'Post'
+        }
+    ],
+    //array of user objects
     follows:[ 
-        {type: Schema.ObjectId, 
-        ref: 'User'} 
-        
+        {
+            type: Schema.ObjectId, 
+            ref: 'User'
+        }         
     ],
     followers:[ 
-        {type: Schema.ObjectId, 
-        ref: 'User'} 
-        
+        {
+            type: Schema.ObjectId, 
+            ref: 'User'
+        }         
     ],
-    // following:{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'User'
-        
-    // },
-    // followers:{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'User'
-        
-    // },
     date: { //time stamp when user registers
         type: Date,
         default: Date.now()
     }
 });
 
-//module.exports = Follow = mongoose.model('Follow', followSchema);
+module.exports = Post = mongoose.model('Post', postSchema);
 module.exports = User = mongoose.model('User', userSchema);

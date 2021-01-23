@@ -9,6 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Models
 const db = require('../models');
+const User = require('../models/User');
 //const User = require('../models/User')
 
 // GET api/users/test (Public)
@@ -40,9 +41,9 @@ router.post('/register', (req, res) => {
                 password: req.body.password,
                 picture: req.body.picture,
                 bio: req.body.bio,
-                //following: req.body.following,
+                posts: req.body.posts,
+                follows: req.body.follows,
                 followers: req.body.followers,
-                follows: req.body.follows
             });
             // Salt and hash the password, then save the user
             bcrypt.genSalt(10, (err, salt) => {
@@ -90,6 +91,7 @@ router.post('/login', async (req, res) => {
                         username: user.username,
                         picture: user.picture,
                         bio: user.bio,
+                        posts: req.body.posts,
                         follows: user.follows,
                         followers: user.followers
                         // expiredToken: user.expiredToken
@@ -154,6 +156,29 @@ router.put('/update/:id', (req, res) => {
     .catch((error) => res.send({ error }))
 })
 
+
+//route to pushing into the post array
+router.put('/posts/:id', (req, res) => {
+    console.log('---req.body----', req.body)
+   db.User.findOneAndUpdate({ _id: req.params.id } ,{$push:
+        {posts: req.body.posts },
+    }).then((user) => {
+    res.status(201).json({ user })
+    })
+    .catch((error) => res.send({ error }))
+})
+
+//get route to view one user's posts
+router.get('/posts/:id', (req, res) => {
+    db.User.findOne({ _id: req.params.id })
+    .then((user) =>{
+        console.log(user.posts)
+        res.status(201).json(user.posts)
+    })
+    .catch((error) => res.send({ error }))
+})
+
+
 //get route to view people the user follows as an array of objects
 router.get('/follows/:id', async (req, res) => {
     console.log(req.body.id, '----REQ BODY-----')
@@ -177,6 +202,8 @@ router.get('/followers/:id', async (req, res) => {
     })
     .catch((error) => res.send({error}))
 })
+
+
 
 //Put route to add a follower
 router.put('/followers/add/:id', (req, res) => {

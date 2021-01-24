@@ -23,7 +23,7 @@ router.post('/register', (req, res) => {
     //console.log(db)
     console.log("-----req---", req.body )
     console.log("-----IS NAME STILL SHOWING UP-----", req.body.name)
-    console.log("-----req---", req.body.username )
+    console.log("-----req---", req.body.name )
     
     //find user by email
     db.User.findOne({ email: req.body.email })
@@ -36,7 +36,7 @@ router.post('/register', (req, res) => {
             // Create a new user
             console.log('else statement');
             const newUser = new User({
-                username: req.body.username,
+                name: req.body.name,
                 email: req.body.email,
                 password: req.body.password,
                 picture: req.body.picture,
@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
                     const payload = {
                         id: user.id,
                         email: user.email,
-                        username: user.username,
+                        name: user.name,
                         picture: user.picture,
                         bio: user.bio,
                         posts: req.body.posts,
@@ -135,6 +135,7 @@ router.get('/all',(req, res) =>{
         console.log(users)
         res.json(users)
     })
+    
 })
 
 //update user account bio and picture
@@ -237,7 +238,7 @@ router.put('/followers/remove/:id', (req, res) => {
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({
         id: req.user.id,
-        username: req.user.username,
+        name: req.user.name,
         email: req.user.email,
         picture: user.picture,
         bio: user.bio,

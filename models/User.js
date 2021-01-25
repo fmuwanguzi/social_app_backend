@@ -12,7 +12,7 @@ const postSchema = new Schema({
 
 // User Schema
 const userSchema = new Schema({
-    //username should be unique
+    //name should be unique
     name: {
         type: String,
         required: true,

@@ -145,7 +145,8 @@ router.put('/update/:id', (req, res) => {
     console.log('-----this is the user follows-----', req.body.follows )
 
     db.User.updateMany({_id: req.params.id}, {$set: 
-        {           
+        {    
+            name: req.body.name,       
             picture: req.body.picture,
             bio: req.body.bio      
         },

@@ -138,6 +138,7 @@ router.get('/all',(req, res) =>{
     
 })
 
+
 //update user account bio and picture
 router.put('/update/:id', (req, res) => {
     console.log('---this is put route---');
@@ -247,6 +248,17 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
         followers: user.followers
     });
 });
+
+
+//get route for one user with id
+router.get('/one/:id', (req, res) => {
+    db.User.findOne({ _id: req.params.id })
+    .then((user) =>{
+        console.log(user)
+        res.status(201).json(user)
+    })
+    .catch((error) => res.send({ error }))
+})
 
 
 //this allows user accounts to be deleted

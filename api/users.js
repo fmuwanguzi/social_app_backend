@@ -206,16 +206,15 @@ router.get('/followers/:id', async (req, res) => {
     .catch((error) => res.send({error}))
 })
 
-
-
 //Put route to add a follower
-router.put('/followers/add/:id', (req, res) => {
+router.put('/followers/add/:id', passport.authenticate('jwt', { session: false }),(req, res) => {
     console.log('====req.params=====',req.params)
     console.log('=====req.body=======',req.body)
     //addToSet doesn't allow for duplicates
-    db.User.findOneAndUpdate({ _id: req.params.id } ,{$addToSet:
+    console.log(req.user)
+    db.User.findOneAndUpdate({ _id: req.user.id } ,{$addToSet:
     
-        {followers: req.body.followers },
+        {followers: req.params.id },
     }).then((user) => {
         res.status(201).json({ user })
       })
@@ -223,18 +222,49 @@ router.put('/followers/add/:id', (req, res) => {
 })
 
 //Put route to remove a follower
-router.put('/followers/remove/:id', (req, res) => {
+router.put('/followers/remove/:id', passport.authenticate('jwt', { session: false }),(req, res) => {
     console.log('====req.params=====',req.params)
     console.log('=====req.body=======',req.body)
     //addToSet doesn't allow for duplicates
     db.User.findOneAndUpdate({ _id: req.params.id } ,{$pull:
     
-        {followers: req.body.followers },
+        {followers: req.params.id },
     }).then((user) => {
         res.status(201).json({ user })
       })
       .catch((error) => res.send({ error }))
 })
+
+//Put route to add a follow
+router.put('/follows/add/:id', passport.authenticate('jwt', { session: false }),(req, res) => {
+    console.log('====req.params=====',req.params)
+    console.log('=====req.body=======',req.body)
+    //addToSet doesn't allow for duplicates
+    console.log(req.user)
+    db.User.findOneAndUpdate({ _id: req.user.id } ,{$addToSet:
+    
+        {follows: req.params.id },
+    }).then((user) => {
+        res.status(201).json({ user })
+      })
+      .catch((error) => res.send({ error }))
+})
+
+//Put route to remove a follow
+router.put('/follows/remove/:id', passport.authenticate('jwt', { session: false }),(req, res) => {
+    console.log('====req.params=====',req.params)
+    console.log('=====req.body=======',req.body)
+    //addToSet doesn't allow for duplicates
+    db.User.findOneAndUpdate({ _id: req.params.id } ,{$pull:
+    
+        {follows: req.params.id },
+    }).then((user) => {
+        res.status(201).json({ user })
+      })
+      .catch((error) => res.send({ error }))
+})
+
+
 
 // GET api/users/current (Private)
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
